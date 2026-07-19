@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head(title='Trang chủ - Tiệm Bánh Ngọt')}"></head>
+<body>
+    <div th:replace="~{layout :: navbar}"></div>
+
+    <!-- Hero Section -->
+    <section class="hero-section py-5 mb-5 position-relative overflow-hidden" 
+             style="background: linear-gradient(135deg, #fff5f5 0%, #fff 100%); min-height: 500px; display: flex; align-items: center;">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h6 class="text-primary fw-bold text-uppercase mb-3" style="letter-spacing: 2px;">Chào mừng đến với SweetCake</h6>
+                    <h1 class="display-3 fw-bold mb-4" style="line-height: 1.1;">Hương Vị <span class="text-primary">Ngọt Ngào</span> Trong Từng Miếng Bánh</h1>
+                    <p class="lead text-muted mb-5">Khám phá bộ sưu tập bánh ngọt thủ công, được làm từ những nguyên liệu tự nhiên và cao cấp nhất.</p>
+                    <div class="d-flex gap-3">
+                        <a href="/products" class="btn btn-primary btn-lg shadow">Mua ngay</a>
+                        <a href="#featured" class="btn btn-outline-primary btn-lg">Xem nổi bật</a>
+                    </div>
+                </div>
+                <div class="col-lg-6 d-none d-lg-block">
+                    <div class="hero-img-wrapper position-relative">
+                        <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=800&q=80" 
+                             class="img-fluid rounded-4 shadow-lg" alt="Sweet Cake Hero">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container">
+        <!-- Categories Section -->
+        <section class="mb-5 py-4">
+            <div class="text-center mb-5">
+                <h2 class="display-6 fw-bold">Khám Phá Theo Danh Mục</h2>
+                <div class="bg-primary mx-auto" style="width: 60px; height: 4px; border-radius: 2px;"></div>
+            </div>
+            <div class="row g-4">
+                <div class="col-6 col-md-3 col-lg-2 mb-3" th:each="category : ${categories}">
+                    <a th:href="@{/products(category=${category.id})}" class="text-decoration-none">
+                        <div class="category-card p-4 text-center rounded-4 shadow-sm border-0 transition-all">
+                            <div class="category-icon mb-3 mx-auto d-flex align-items-center justify-content-center bg-light rounded-circle" style="width: 60px; height: 60px;">
+                                <i class="fas fa-birthday-cake text-primary fs-4"></i>
+                            </div>
+                            <h6 class="fw-bold mb-0 text-dark" th:text="${category.name}">Tên Danh Mục</h6>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Products -->
+        <section id="featured" class="mb-5 py-4">
+            <div class="d-flex justify-content-between align-items-end mb-5">
+                <div>
+                    <h2 class="display-6 fw-bold mb-0">Sản Phẩm Nổi Bật</h2>
+                    <p class="text-muted mb-0">Những món bánh được yêu thích nhất trong tuần</p>
+                </div>
+                <a href="/products" class="btn btn-link text-decoration-none fw-bold text-primary">Xem tất cả <i class="fas fa-arrow-right ms-2"></i></a>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-3 col-sm-6 mb-4" th:each="product : ${featuredProducts}">
+                    <div class="card h-100 shadow-sm product-card border-0 overflow-hidden rounded-4">
+                        <div class="position-relative overflow-hidden">
+                            <img th:src="${product.imageUrl ?: 'https://via.placeholder.com/300x200?text=Bánh'}" 
+                                 class="card-img-top transition-all" th:alt="${product.name}" 
+                                 style="height: 250px; object-fit: cover;">
+                            <div class="product-badge position-absolute top-0 start-0 m-3">
+                                <span class="badge bg-white text-primary shadow-sm rounded-pill px-3 py-2 fw-bold">Nổi bật</span>
+                            </div>
+                            <div class="product-actions">
+                                <a th:href="@{/products/{id}(id=${product.id})}" class="btn btn-white btn-sm rounded-circle shadow me-2"><i class="fas fa-eye"></i></a>
+                                <form th:action="@{/cart/add}" method="post" class="d-inline" sec:authorize="!hasRole('ADMIN')">
+                                    <input type="hidden" name="productId" th:value="${product.id}" />
+                                    <input type="hidden" name="quantity" value="1" />
+                                    <button type="submit" class="btn btn-primary btn-sm rounded-circle shadow"><i class="fas fa-cart-plus"></i></button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="card-body p-4 text-center">
+                            <h5 class="card-title fw-bold mb-2 text-truncate" th:text="${product.name}">Tên Bánh</h5>
+                            <div th:if="${product.discountPrice != null}" class="d-flex justify-content-center align-items-center gap-2">
+                                <span class="text-muted text-decoration-line-through small" 
+                                      th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT') + ' đ'}">Giá cũ</span>
+                                <span class="text-danger fw-bold fs-5 mb-0" 
+                                      th:text="${#numbers.formatDecimal(product.discountPrice, 0, 'COMMA', 0, 'POINT') + ' đ'}">Giá mới</span>
+                            </div>
+                            <p th:if="${product.discountPrice == null}" class="card-text text-primary fw-bold fs-5 mb-0" 
+                               th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT') + ' đ'}">Giá</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Discounted Products -->
+        <section th:if="${not #lists.isEmpty(discountedProducts)}" class="mb-5 py-4">
+            <div class="d-flex justify-content-between align-items-end mb-5">
+                <div>
+                    <h2 class="display-6 fw-bold mb-0">Ưu Đãi Đặc Biệt</h2>
+                    <p class="text-muted mb-0">Săn ngay bánh ngon với giá cực hời</p>
+                </div>
+                <a href="/products" class="btn btn-link text-decoration-none fw-bold text-primary">Xem tất cả <i class="fas fa-arrow-right ms-2"></i></a>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-3 col-sm-6 mb-4" th:each="product : ${discountedProducts}">
+                    <div class="card h-100 shadow-sm product-card border-0 overflow-hidden rounded-4">
+                        <div class="position-relative overflow-hidden">
+                            <img th:src="${product.imageUrl ?: 'https://via.placeholder.com/300x200?text=Bánh'}" 
+                                 class="card-img-top transition-all" th:alt="${product.name}" 
+                                 style="height: 250px; object-fit: cover;">
+                            <div class="product-badge position-absolute top-0 start-0 m-3">
+                                <span class="badge bg-danger text-white shadow-sm rounded-pill px-3 py-2 fw-bold">Giảm giá</span>
+                            </div>
+                            <div class="product-actions">
+                                <a th:href="@{/products/{id}(id=${product.id})}" class="btn btn-white btn-sm rounded-circle shadow me-2"><i class="fas fa-eye"></i></a>
+                                <form th:action="@{/cart/add}" method="post" class="d-inline" sec:authorize="!hasRole('ADMIN')">
+                                    <input type="hidden" name="productId" th:value="${product.id}" />
+                                    <input type="hidden" name="quantity" value="1" />
+                                    <button type="submit" class="btn btn-primary btn-sm rounded-circle shadow"><i class="fas fa-cart-plus"></i></button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="card-body p-4 text-center">
+                            <h5 class="card-title fw-bold mb-2 text-truncate" th:text="${product.name}">Tên Bánh</h5>
+                            <div class="d-flex justify-content-center align-items-center gap-2">
+                                <span class="text-muted text-decoration-line-through small" 
+                                      th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT') + ' đ'}">Giá cũ</span>
+                                <span class="text-danger fw-bold fs-5 mb-0" 
+                                      th:text="${#numbers.formatDecimal(product.discountPrice, 0, 'COMMA', 0, 'POINT') + ' đ'}">Giá mới</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Latest Products -->
+        <section class="mb-5 py-4">
+            <div class="text-center mb-5">
+                <h2 class="display-6 fw-bold">Hàng Mới Vừa Ra Lò</h2>
+                <div class="bg-primary mx-auto" style="width: 60px; height: 4px; border-radius: 2px;"></div>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-3 col-sm-6 mb-4" th:each="product : ${latestProducts}">
+                    <div class="card h-100 shadow-sm product-card border-0 overflow-hidden rounded-4">
+                        <div class="position-relative overflow-hidden">
+                            <img th:src="${product.imageUrl ?: 'https://via.placeholder.com/300x200?text=Bánh'}" 
+                                 class="card-img-top transition-all" th:alt="${product.name}" 
+                                 style="height: 250px; object-fit: cover;">
+                        </div>
+                        <div class="card-body p-4 text-center">
+                            <h5 class="card-title fw-bold mb-2 text-truncate" th:text="${product.name}">Tên Bánh</h5>
+                            <div th:if="${product.discountPrice != null}" class="d-flex justify-content-center align-items-center gap-2">
+                                <span class="text-muted text-decoration-line-through small" 
+                                      th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT') + ' đ'}">Giá cũ</span>
+                                <span class="text-danger fw-bold fs-5 mb-0" 
+                                      th:text="${#numbers.formatDecimal(product.discountPrice, 0, 'COMMA', 0, 'POINT') + ' đ'}">Giá mới</span>
+                            </div>
+                            <p th:if="${product.discountPrice == null}" class="card-text text-primary fw-bold fs-5 mb-0" 
+                               th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT') + ' đ'}">Giá</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div th:replace="~{layout :: footer}"></div>
+    
+    <style>
+        .category-card { background: white; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer; }
+        .category-card:hover { transform: translateY(-10px); background: var(--primary-color); }
+        .category-card:hover h6, .category-card:hover .category-icon i { color: white !important; }
+        .category-card:hover .category-icon { background: rgba(255,255,255,0.2) !important; }
+
+        .product-card { transition: all 0.3s ease; }
+        .product-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.1) !important; }
+        .product-card:hover img { transform: scale(1.1); }
+        
+        .product-actions {
+            position: absolute;
+            bottom: -50px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            padding: 15px;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+        }
+        .product-card:hover .product-actions { bottom: 0; }
+        
+        .transition-all { transition: all 0.3s ease; }
+        .btn-white { background: white; color: var(--primary-color); border: none; }
+        .btn-white:hover { background: var(--primary-color); color: white; }
+    </style>

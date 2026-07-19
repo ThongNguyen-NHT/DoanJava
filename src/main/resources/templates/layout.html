@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:fragment="head(title)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title}">SweetCake - Tiệm Bánh Ngọt</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #ff6b6b;
+            --secondary-color: #feca57;
+            --accent-color: #48dbfb;
+            --dark-color: #2d3436;
+            --light-bg: #fff5f5;
+            --text-color: #57606f;
+        }
+
+        body { 
+            font-family: 'Quicksand', sans-serif; 
+            color: var(--text-color);
+            background-color: #fffafb;
+        }
+
+        h1, h2, h3, h4, h5, .navbar-brand { 
+            font-family: 'Playfair Display', serif; 
+        }
+
+        .navbar-brand { font-weight: bold; color: var(--primary-color) !important; font-size: 1.5rem; }
+        
+        .btn-primary { 
+            background-color: var(--primary-color); 
+            border-color: var(--primary-color);
+            border-radius: 50px;
+            padding: 8px 25px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .btn-primary:hover { 
+            background-color: #ee5253; 
+            border-color: #ee5253;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        .btn-outline-primary {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            border-radius: 50px;
+            font-weight: 600;
+        }
+        .btn-outline-primary:hover {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        footer { background-color: white; padding: 4rem 0; margin-top: 5rem; border-top: 1px solid #eee; }
+        .footer-title { color: var(--primary-color); font-weight: bold; margin-bottom: 1.5rem; }
+        
+        .nav-link { font-weight: 500; color: var(--dark-color) !important; transition: 0.3s; }
+        .nav-link:hover { color: var(--primary-color) !important; }
+
+        .shadow-sm { box-shadow: 0 .125rem .25rem rgba(0,0,0,.04)!important; }
+        .shadow { box-shadow: 0 .5rem 1rem rgba(0,0,0,.08)!important; }
+
+        /* Search Suggestions */
+        .search-container { position: relative; }
+        .search-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            z-index: 1000;
+            display: none;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 10px;
+            padding: 8px;
+        }
+        .suggestion-item {
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #333;
+            transition: all 0.2s;
+            border-radius: 8px;
+            margin-bottom: 4px;
+        }
+        .suggestion-item:last-child { margin-bottom: 0; }
+        .suggestion-item:hover { background: var(--light-bg); color: var(--primary-color); }
+        .suggestion-img-wrapper {
+            width: 45px;
+            height: 45px;
+            margin-right: 15px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .suggestion-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .suggestion-info { flex: 1; }
+        .suggestion-name { font-weight: 600; font-size: 0.95rem; margin-bottom: 2px; }
+        .suggestion-price { font-size: 0.85rem; color: var(--primary-color); font-weight: bold; }
+
+        .form-control:focus {
+            box-shadow: 0 0 0 0.25rem rgba(255, 107, 107, 0.15);
+            border-color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <div th:fragment="navbar">
+        <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+            <div class="container">
+                <a class="navbar-brand" th:href="@{/}">🍰 SWEETCAKE</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item"><a class="nav-link" th:href="@{/}">Trang chủ</a></li>
+                        <li class="nav-item"><a class="nav-link" th:href="@{/products}">Sản phẩm</a></li>
+                    </ul>
+                    <div class="search-container me-3">
+                        <form class="d-flex" th:action="@{/products}" method="get" id="searchForm">
+                            <input class="form-control me-2" type="search" name="keyword" id="searchInput" 
+                                   placeholder="Tìm kiếm bánh..." aria-label="Search" autocomplete="off">
+                            <button class="btn btn-outline-primary" type="submit"><i class="fas fa-search"></i></button>
+                        </form>
+                        <div id="searchSuggestions" class="search-suggestions"></div>
+                    </div>
+                    <div class="navbar-nav">
+                        <!-- Hide Cart for Admin -->
+                        <a th:href="@{/cart}" class="nav-link position-relative me-3" sec:authorize="!hasRole('ADMIN')">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span th:if="${cartCount != null && cartCount > 0}" 
+                                  class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" 
+                                  th:text="${cartCount}">0</span>
+                        </a>
+                        
+                        <!-- When NOT logged in -->
+                        <div sec:authorize="isAnonymous()" class="d-flex">
+                            <a th:href="@{/login}" class="nav-link"><i class="fas fa-sign-in-alt me-1"></i>Đăng nhập</a>
+                            <a th:href="@{/register}" class="nav-link"><i class="fas fa-user-plus me-1"></i>Đăng ký</a>
+                        </div>
+                        
+                        <!-- When logged in -->
+                        <div sec:authorize="isAuthenticated()" class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-user-circle"></i> <span sec:authentication="name">User</span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="userDropdown">
+                                <li sec:authorize="hasRole('ADMIN')">
+                                    <a class="dropdown-item fw-bold text-primary" th:href="@{/admin}">
+                                        <i class="fas fa-user-shield me-2"></i> Trang quản trị
+                                    </a>
+                                </li>
+                                <li sec:authorize="hasRole('ADMIN')"><hr class="dropdown-divider"></li>
+                                
+                                <li><a class="dropdown-item" th:href="@{/profile}"><i class="fas fa-id-card me-2"></i> Hồ sơ</a></li>
+                                
+                                <li sec:authorize="!hasRole('ADMIN')">
+                                    <a class="dropdown-item" th:href="@{/orders}"><i class="fas fa-history me-2"></i> Đơn hàng</a>
+                                </li>
+                                
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form th:action="@{/logout}" method="post" style="display: inline;">
+                                        <button type="submit" class="dropdown-item text-danger"><i class="fas fa-sign-out-alt me-2"></i> Đăng xuất</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <div th:fragment="footer">
+        <footer>
+            <div class="container text-center">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <h5>Về chúng tôi</h5>
+                        <p class="text-muted small">Tiệm bánh ngọt thủ công với nguyên liệu tự nhiên nhất.</p>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <h5>Liên hệ</h5>
+                        <p class="text-muted small">Địa chỉ: 123 Đường Nguyễn Du, TP. HCM<br>SĐT: 0912744141</p>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <h5>Theo dõi</h5>
+                        <div class="d-flex justify-content-center gap-3">
+                            <a href="#" class="text-muted"><i class="fab fa-facebook fa-lg"></i></a>
+                            <a href="#" class="text-muted"><i class="fab fa-instagram fa-lg"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <p class="text-muted mb-0">&copy; 2026 SweetCake. All rights reserved.</p>
+            </div>
+        </footer>
+        
+        <!-- Essential Scripts - MUST BE INSIDE FRAGMENT -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        
+        <!-- Toast Notifications Container -->
+        <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1100;">
+            <div id="liveToast" class="toast shadow border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header border-0">
+                    <i class="fas fa-info-circle me-2 text-primary" id="toastIcon"></i>
+                    <strong class="me-auto" id="toastTitle">Thông báo</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body" id="toastMessage"></div>
+            </div>
+        </div>
+
+        <script th:inline="javascript">
+            document.addEventListener('DOMContentLoaded', function() {
+                // Toast notifications
+                const successMsg = [[${success}]];
+                const errorMsg = [[${error}]];
+                
+                if (successMsg || errorMsg) {
+                    const toastLiveExample = document.getElementById('liveToast');
+                    if (toastLiveExample) {
+                        const toast = new bootstrap.Toast(toastLiveExample);
+                        const toastMessage = document.getElementById('toastMessage');
+                        const toastIcon = document.getElementById('toastIcon');
+                        
+                        if (successMsg) {
+                            toastMessage.textContent = successMsg;
+                            toastIcon.className = "fas fa-check-circle me-2 text-success";
+                        } else {
+                            toastMessage.textContent = errorMsg;
+                            toastIcon.className = "fas fa-exclamation-circle me-2 text-danger";
+                        }
+                        toast.show();
+                    }
+                }
+
+                // Search Suggestions logic
+                const searchInput = document.getElementById('searchInput');
+                const suggestionsBox = document.getElementById('searchSuggestions');
+                let debounceTimer;
+
+                if (searchInput && suggestionsBox) {
+                    searchInput.addEventListener('input', function() {
+                        clearTimeout(debounceTimer);
+                        const query = this.value.trim();
+
+                        if (query.length < 2) {
+                            suggestionsBox.style.display = 'none';
+                            return;
+                        }
+
+                        debounceTimer = setTimeout(() => {
+                            const baseUrl = /*[[@{/api/products/search-suggestions}]]*/ '/api/products/search-suggestions';
+                            fetch(`${baseUrl}?keyword=${encodeURIComponent(query)}`)
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.length > 0) {
+                                        suggestionsBox.innerHTML = data.map(product => `
+                                            <a href="/products/${product.id}" class="suggestion-item">
+                                                <div class="suggestion-img-wrapper">
+                                                    <img src="${product.imageUrl || 'https://via.placeholder.com/40?text=🍰'}" 
+                                                         class="suggestion-img" alt="${product.name}"
+                                                         onerror="this.src='https://via.placeholder.com/40?text=🍰'">
+                                                </div>
+                                                <div class="suggestion-info">
+                                                    <div class="suggestion-name">${product.name}</div>
+                                                    <div class="suggestion-price">${product.price.toLocaleString('vi-VN')}đ</div>
+                                                </div>
+                                            </a>
+                                        `).join('');
+                                        suggestionsBox.style.display = 'block';
+                                    } else {
+                                        suggestionsBox.style.display = 'none';
+                                    }
+                                });
+                        }, 300);
+                    });
+
+                    // Close suggestions when clicking outside
+                    document.addEventListener('click', function(e) {
+                        if (!searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
+                            suggestionsBox.style.display = 'none';
+                        }
+                    });
+
+                    // Prevent form submission if needed (optional, currently it submits normally)
+                }
+            });
+        </script>
+    </div>
+</body>
+</html>

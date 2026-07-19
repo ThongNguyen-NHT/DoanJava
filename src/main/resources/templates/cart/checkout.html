@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head(title='Thanh toán - SweetCake')}"></head>
+<body>
+    <div th:replace="~{layout :: navbar}"></div>
+
+    <div class="container my-5">
+        <h2 class="mb-4 text-center">Xác nhận đơn hàng</h2>
+
+        <form th:action="@{/cart/checkout}" th:object="${order}" method="post">
+            <div class="row">
+                <!-- Shipping Info -->
+                <div class="col-lg-7">
+                    <div class="card shadow-sm border-0 mb-4">
+                        <div class="card-body p-4">
+                            <h5 class="card-title mb-4"><i class="fas fa-map-marker-alt me-2 text-primary"></i>Thông tin giao hàng</h5>
+                            <div class="row g-3">
+                                <div class="col-md-12">
+                                    <label class="form-label">Họ và tên người nhận</label>
+                                    <input type="text" class="form-control" th:field="*{customerName}" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Số điện thoại</label>
+                                    <input type="text" class="form-control" th:field="*{phoneNumber}" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-control" th:field="*{email}" required>
+                                </div>
+                                <div class="col-md-12">
+                                    <label class="form-label">Địa chỉ nhận hàng</label>
+                                    <textarea class="form-control" rows="3" th:field="*{shippingAddress}" required></textarea>
+                                </div>
+                                <div class="col-md-12">
+                                    <label class="form-label">Ghi chú (tùy chọn)</label>
+                                    <textarea class="form-control" rows="2" th:field="*{notes}" placeholder="Ví dụ: Giao vào giờ hành chính..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card shadow-sm border-0">
+                        <div class="card-body p-4">
+                            <h5 class="card-title mb-4"><i class="fas fa-credit-card me-2 text-primary"></i>Phương thức thanh toán</h5>
+                            <div class="form-check mb-2">
+                                <input class="form-control-input" type="radio" name="payment" id="cod" checked style="display: none;">
+                                <label class="form-check-label fw-bold text-success" for="cod">
+                                    <i class="fas fa-money-bill-wave me-2"></i>Thanh toán khi nhận hàng (COD)
+                                </label>
+                                <p class="small text-muted mt-1 mb-0">Bạn sẽ thanh toán tiền mặt trực tiếp cho nhân viên giao hàng khi nhận được bánh.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order Summary -->
+                <div class="col-lg-5">
+                    <div class="card shadow-sm border-0 sticky-top" style="top: 100px;">
+                        <div class="card-body p-4">
+                            <h5 class="card-title mb-4">Tóm tắt đơn hàng</h5>
+                            <div class="mb-4">
+                                <div th:each="item : ${items}" class="d-flex justify-content-between align-items-center mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <div class="position-relative">
+                                            <img th:src="${item.imageUrl ?: 'https://via.placeholder.com/50x50'}" class="rounded me-3" style="width: 50px; height: 50px; object-fit: cover;">
+                                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-secondary" th:text="${item.quantity}">1</span>
+                                        </div>
+                                        <span class="small fw-bold" th:text="${item.name}">Tên bánh</span>
+                                    </div>
+                                    <span class="small text-muted" th:text="${#numbers.formatDecimal(item.subTotal, 0, 'COMMA', 0, 'POINT') + ' đ'}">0 đ</span>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="d-flex justify-content-between mb-4">
+                                <span class="h5 fw-bold">Tổng thanh toán:</span>
+                                <span class="h5 fw-bold text-primary" th:text="${#numbers.formatDecimal(total, 0, 'COMMA', 0, 'POINT') + ' đ'}">0 đ</span>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100 btn-lg shadow-sm">Xác nhận đặt hàng</button>
+                            <p class="text-center small text-muted mt-3">Bằng cách đặt hàng, bạn đồng ý với các điều khoản của SweetCake.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div th:replace="~{layout :: footer}"></div>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head(title='Admin Dashboard - SweetCake')}"></head>
+<body class="bg-light">
+    <div th:replace="~{layout :: navbar}"></div>
+
+    <div class="container my-5">
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <h2 class="fw-bold"><i class="fas fa-chart-line me-2"></i>Bảng điều khiển quản trị</h2>
+                <hr>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="row mb-5">
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm bg-primary text-white h-100">
+                    <div class="card-body text-center p-4">
+                        <i class="fas fa-money-bill-wave fa-2x mb-3"></i>
+                        <h5>Doanh thu</h5>
+                        <h3 class="fw-bold" th:text="${#numbers.formatDecimal(totalRevenue, 0, 'COMMA', 0, 'POINT') + ' đ'}">0 đ</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm bg-success text-white h-100">
+                    <div class="card-body text-center p-4">
+                        <i class="fas fa-shopping-bag fa-2x mb-3"></i>
+                        <h5>Đơn hàng mới</h5>
+                        <h3 class="fw-bold" th:text="${newOrdersCount}">0</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm bg-info text-white h-100">
+                    <div class="card-body text-center p-4">
+                        <i class="fas fa-users fa-2x mb-3"></i>
+                        <h5>Khách hàng</h5>
+                        <h3 class="fw-bold" th:text="${totalCustomers}">0</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm bg-warning text-white h-100">
+                    <div class="card-body text-center p-4">
+                        <i class="fas fa-exclamation-triangle fa-2x mb-3"></i>
+                        <h5>Cảnh báo kho</h5>
+                        <h3 class="fw-bold" th:text="${lowStockProducts.size()}">0</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Low Stock Table -->
+            <div class="col-md-8">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="mb-0 fw-bold">Sản phẩm sắp hết hàng</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Sản phẩm</th>
+                                        <th>Danh mục</th>
+                                        <th>Còn lại</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="p : ${lowStockProducts}">
+                                        <td th:text="${p.name}">Bánh</td>
+                                        <td th:text="${p.category.name}">Danh mục</td>
+                                        <td>
+                                            <span class="badge bg-danger" th:text="${p.stock}">0</span>
+                                        </td>
+                                        <td>
+                                            <a th:href="@{/admin/products/edit/{id}(id=${p.id})}" class="btn btn-sm btn-outline-primary">Nhập hàng</a>
+                                        </td>
+                                    </tr>
+                                    <tr th:if="${lowStockProducts.empty}">
+                                        <td colspan="4" class="text-center text-muted">Mọi sản phẩm đều còn đủ hàng.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Quick Links -->
+            <div class="col-md-4">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="mb-0 fw-bold">Quản lý nhanh</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-3">
+                            <a href="/admin/products" class="btn btn-outline-dark p-3 text-start">
+                                <i class="fas fa-box me-2"></i> Quản lý Sản phẩm
+                            </a>
+                            <a href="/admin/categories" class="btn btn-outline-dark p-3 text-start">
+                                <i class="fas fa-tags me-2"></i> Quản lý Danh mục
+                            </a>
+                            <a href="/admin/orders" class="btn btn-outline-dark p-3 text-start">
+                                <i class="fas fa-clipboard-list me-2"></i> Quản lý Đơn hàng
+                            </a>
+                            <a href="/admin/coupons" class="btn btn-outline-dark p-3 text-start">
+                                <i class="fas fa-ticket-alt me-2"></i> Quản lý Mã giảm giá
+                            </a>
+                            <a href="/admin/reviews" class="btn btn-outline-dark p-3 text-start">
+                                <i class="fas fa-star me-2"></i> Quản lý Đánh giá
+                            </a>
+                            <a href="/admin/users" class="btn btn-outline-dark p-3 text-start">
+                                <i class="fas fa-user-friends me-2"></i> Quản lý Người dùng
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{layout :: footer}"></div>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head(title='Đăng ký tài khoản - SweetCake')}"></head>
+<body class="bg-light">
+    <div th:replace="~{layout :: navbar}"></div>
+
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card shadow border-0">
+                    <div class="card-body p-5">
+                        <h2 class="text-center mb-4 text-primary fw-bold">Tạo tài khoản mới</h2>
+                        
+                        <div th:if="${error}" class="alert alert-danger" th:text="${error}">
+                            Lỗi đăng ký.
+                        </div>
+
+                        <form th:action="@{/register}" th:object="${user}" method="post">
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    <label for="fullName" class="form-label">Họ và tên <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="fullName" th:field="*{fullName}" th:classappend="${#fields.hasErrors('fullName')} ? 'is-invalid'">
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}">Lỗi</div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="username" class="form-label">Tên đăng nhập <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="username" th:field="*{username}" th:classappend="${#fields.hasErrors('username')} ? 'is-invalid'">
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Lỗi</div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+                                    <input type="email" class="form-control" id="email" th:field="*{email}" th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'">
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Lỗi</div>
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    <label for="password" class="form-label">Mật khẩu <span class="text-danger">*</span></label>
+                                    <input type="password" class="form-control" id="password" th:field="*{password}" th:classappend="${#fields.hasErrors('password')} ? 'is-invalid'">
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Lỗi</div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="phone" class="form-label">Số điện thoại <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="phone" th:field="*{phone}" th:classappend="${#fields.hasErrors('phone')} ? 'is-invalid'">
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}">Lỗi</div>
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <label for="address" class="form-label">Địa chỉ <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="address" th:field="*{address}" th:classappend="${#fields.hasErrors('address')} ? 'is-invalid'">
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('address')}" th:errors="*{address}">Lỗi</div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100 btn-lg mb-3">Đăng ký tài khoản</button>
+                            <p class="text-center text-muted">Đã có tài khoản? <a href="/login">Đăng nhập</a></p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{layout :: footer}"></div>
+</body>
+</html>

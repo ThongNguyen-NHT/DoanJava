@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head(title='Lịch sử đơn hàng - SweetCake')}"></head>
+<body>
+    <div th:replace="~{layout :: navbar}"></div>
+
+    <div class="container my-5">
+        <h2 class="mb-4"><i class="fas fa-history me-2"></i>Lịch sử đơn hàng của bạn</h2>
+
+        <div th:if="${orders.empty}" class="text-center py-5 card shadow-sm border-0">
+            <div class="card-body">
+                <i class="fas fa-box-open fa-4x text-muted mb-3"></i>
+                <p class="fs-5 text-muted">Bạn chưa có đơn hàng nào.</p>
+                <a href="/products" class="btn btn-primary">Mua sắm ngay</a>
+            </div>
+        </div>
+
+        <div th:if="${!orders.empty}" class="row">
+            <div class="col-12">
+                <div class="card shadow-sm border-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th class="ps-4">Mã đơn</th>
+                                    <th>Ngày đặt</th>
+                                    <th>Sản phẩm</th>
+                                    <th>Tổng tiền</th>
+                                    <th>Trạng thái</th>
+                                    <th class="text-end pe-4">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="order : ${orders}">
+                                    <td class="ps-4 fw-bold" th:text="'#' + ${order.id}">#1</td>
+                                    <td th:text="${#temporals.format(order.orderDate, 'dd/MM/yyyy HH:mm')}">01/01/2026</td>
+                                    <td>
+                                        <div th:each="detail, iterStat : ${order.orderDetails}" th:if="${iterStat.index < 2}">
+                                            <small th:text="${detail.product.name} + ' x' + ${detail.quantity}">Tên bánh x1</small>
+                                        </div>
+                                        <small th:if="${order.orderDetails.size() > 2}" class="text-muted" th:text="'+ ' + (${order.orderDetails.size()} - 2) + ' sản phẩm khác'"></small>
+                                    </td>
+                                    <td class="fw-bold text-primary" th:text="${#numbers.formatDecimal(order.totalPrice, 0, 'COMMA', 0, 'POINT') + ' đ'}">0 đ</td>
+                                    <td>
+                                        <span class="badge" 
+                                              th:classappend="${order.status.name() == 'DELIVERED' ? 'bg-success' : (order.status.name() == 'CANCELLED' ? 'bg-danger' : 'bg-warning')}"
+                                              th:text="${order.status}">PENDING</span>
+                                    </td>
+                                    <td class="text-end pe-4">
+                                        <a th:if="${order.status.name() == 'PENDING'}" 
+                                           th:href="@{/orders/cancel/{id}(id=${order.id})}" 
+                                           class="btn btn-sm btn-outline-danger me-2"
+                                           onclick="return confirm('Bạn có chắc muốn hủy đơn hàng này?')">Hủy đơn</a>
+                                        <a th:href="@{/orders/{id}(id=${order.id})}" class="btn btn-sm btn-outline-primary">Chi tiết</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{layout :: footer}"></div>
+</body>
+</html>

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head(title='Truy cập bị từ chối - SweetCake')}"></head>
+<body>
+    <div th:replace="~{layout :: navbar}"></div>
+
+    <div class="container my-5 text-center">
+        <div class="py-5">
+            <i class="fas fa-exclamation-triangle fa-5x text-warning mb-4"></i>
+            <h1 class="display-4 fw-bold mb-3">403 - Truy cập bị từ chối</h1>
+            <p class="fs-5 text-muted mb-5">Bạn không có quyền truy cập vào trang này. Vui lòng liên hệ quản trị viên nếu bạn tin rằng đây là một lỗi.</p>
+            
+            <a href="/" class="btn btn-primary btn-lg">Quay về trang chủ</a>
+        </div>
+    </div>
+
+    <div th:replace="~{layout :: footer}"></div>
+</body>
+</html>

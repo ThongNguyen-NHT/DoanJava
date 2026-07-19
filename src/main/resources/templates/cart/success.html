@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head(title='Đặt hàng thành công - SweetCake')}"></head>
+<body>
+    <div th:replace="~{layout :: navbar}"></div>
+
+    <div class="container my-5 text-center">
+        <div class="py-5">
+            <i class="fas fa-check-circle fa-5x text-success mb-4"></i>
+            <h1 class="display-4 fw-bold mb-3">Đặt hàng thành công!</h1>
+            <p class="fs-5 text-muted mb-5">Cảm ơn bạn đã tin tưởng SweetCake. Đơn hàng của bạn đã được nhận và đang trong quá trình xử lý.</p>
+            
+            <div class="d-flex justify-content-center gap-3">
+                <a href="/products" class="btn btn-outline-primary btn-lg">Tiếp tục mua sắm</a>
+                <a href="/orders" class="btn btn-primary btn-lg">Xem lịch sử đơn hàng</a>
+            </div>
+        </div>
+
+        <div class="row justify-content-center mt-5">
+            <div class="col-md-6">
+                <div class="card bg-light border-0">
+                    <div class="card-body">
+                        <h6>Bạn cần hỗ trợ?</h6>
+                        <p class="small text-muted mb-0">Liên hệ ngay hotline: <strong>0123 456 789</strong> hoặc nhắn tin qua Fanpage.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{layout :: footer}"></div>
+</body>
+</html>

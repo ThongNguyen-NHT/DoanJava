@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head(title='Quản lý Coupon - SweetCake')}"></head>
+<body class="bg-light">
+    <div th:replace="~{layout :: navbar}"></div>
+
+    <div class="container my-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold"><i class="fas fa-ticket-alt me-2"></i>Quản lý Mã giảm giá</h2>
+            <a href="/admin/coupons/add" class="btn btn-primary"><i class="fas fa-plus me-2"></i>Thêm mã mới</a>
+        </div>
+
+        <div class="card shadow-sm border-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="ps-4">Code</th>
+                            <th>Loại</th>
+                            <th>Giá trị</th>
+                            <th>Đơn tối thiểu</th>
+                            <th>Hết hạn</th>
+                            <th>Trạng thái</th>
+                            <th class="text-end pe-4">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="c : ${coupons}">
+                            <td class="ps-4 fw-bold text-primary" th:text="${c.code}">CODE</td>
+                            <td th:text="${c.type}">PERCENTAGE</td>
+                            <td th:text="${c.type.name() == 'PERCENTAGE' ? c.value + '%' : #numbers.formatDecimal(c.value, 0, 'COMMA', 0, 'POINT') + ' đ'}">10%</td>
+                            <td th:text="${c.minOrderAmount != null ? #numbers.formatDecimal(c.minOrderAmount, 0, 'COMMA', 0, 'POINT') + ' đ' : '0 đ'}">0</td>
+                            <td th:text="${c.expiryDate != null ? #temporals.format(c.expiryDate, 'dd/MM/yyyy') : 'Không'}">-</td>
+                            <td>
+                                <span class="badge" th:classappend="${c.active ? 'bg-success' : 'bg-danger'}" th:text="${c.active ? 'Đang dùng' : 'Khóa'}">Active</span>
+                            </td>
+                            <td class="text-end pe-4">
+                                <a th:href="@{/admin/coupons/edit/{id}(id=${c.id})}" class="btn btn-sm btn-outline-info me-2"><i class="fas fa-edit"></i></a>
+                                <a th:href="@{/admin/coupons/delete/{id}(id=${c.id})}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Xóa mã này?')"><i class="fas fa-trash"></i></a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="mt-4">
+            <a href="/admin" class="btn btn-link text-decoration-none px-0"><i class="fas fa-arrow-left me-2"></i>Quay lại Dashboard</a>
+        </div>
+    </div>
+
+    <div th:replace="~{layout :: footer}"></div>
+</body>
+</html>

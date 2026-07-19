@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head(title='Đăng nhập - SweetCake')}"></head>
+<body class="bg-light">
+    <div th:replace="~{layout :: navbar}"></div>
+
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-md-5">
+                <div class="card shadow border-0">
+                    <div class="card-body p-5">
+                        <h2 class="text-center mb-4">Chào mừng trở lại!</h2>
+                        
+                        <div th:if="${param.error}" class="alert alert-danger">
+                            Tên đăng nhập hoặc mật khẩu không chính xác.
+                        </div>
+                        <div th:if="${param.logout}" class="alert alert-success">
+                            Bạn đã đăng xuất thành công.
+                        </div>
+                        <div th:if="${param.registered}" class="alert alert-success">
+                            Đăng ký thành công! Hãy đăng nhập.
+                        </div>
+
+                        <form th:action="@{/login}" method="post">
+                            <div class="mb-3">
+                                <label for="username" class="form-label">Tên đăng nhập</label>
+                                <input type="text" class="form-control" id="username" name="username" required autofocus>
+                            </div>
+                            <div class="mb-4">
+                                <label for="password" class="form-label">Mật khẩu</label>
+                                <input type="password" class="form-control" id="password" name="password" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100 btn-lg mb-3">Đăng nhập</button>
+                            <p class="text-center text-muted">Chưa có tài khoản? <a href="/register">Đăng ký ngay</a></p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{layout :: footer}"></div>
+</body>
+</html>
